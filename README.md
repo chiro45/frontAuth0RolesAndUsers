@@ -18,9 +18,13 @@ Navegación con React Router.
 Crea un archivo .env en la raíz con estas variables de ejemplo (modificalas según tu entorno):
 
 VITE_AUTH0_DOMAIN=tu-dominio.auth0.com
+
 VITE_AUTH0_CLIENT_ID=tu-client-id
+
 VITE_AUTH0_CALLBACK_URL=http://localhost:5173/callback
+
 VITE_AUTH0_AUDIENCE=https://tu-api-audience
+
 VITE_API_SERVER_URL=http://localhost:8081
 
 
