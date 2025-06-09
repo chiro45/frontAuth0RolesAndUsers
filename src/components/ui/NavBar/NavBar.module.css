@@ -1,0 +1,27 @@
+.navbar {
+  background-color: #333;
+  padding: 0.5rem 1rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.link {
+  text-decoration: none;
+  color: #fff;
+  font-weight: 500;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.link:hover {
+  background-color: #414040;
+}
+
+.active {
+  background-color: #646464;
+  color: white;
+  font-weight: bold;
+}

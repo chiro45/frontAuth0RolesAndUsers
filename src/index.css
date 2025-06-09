@@ -1,0 +1,9 @@
+* {
+  padding: 0;
+  margin: 0;
+  font-family: "Roboto", sans-serif;
+}
+body {
+  background-color: rgba(37, 37, 37, 0.8);
+  color: #fff;
+}
