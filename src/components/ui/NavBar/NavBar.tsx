@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import styles from "./NavBar.module.css";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useAuthStore } from "../../../store/useAuthStore";
 
 interface NavItem {
   path: string;
@@ -27,10 +28,12 @@ const audience = import.meta.env.VITE_AUTH0_AUDIENCE;
 
 export const NavBar = () => {
   const { user, isAuthenticated } = useAuth0();
+  const rol =
+    useAuthStore((state) => state.rol) ||
+    (user && user[`${audience}/roles`]?.[0]);
+    
   if (!isAuthenticated || !user) return null;
 
-  console.log(user)
-  const rol = user[`${audience}/roles`]?.[0];
   const links = roleBasedLinks[rol] || [];
 
   return (

@@ -2,14 +2,14 @@ import { AppState, Auth0Provider } from "@auth0/auth0-react";
 import { FC } from "react";
 import { useNavigate } from "react-router";
 
-type Props = {
-  children: JSX.Element;
-};
 const VITE_AUTH0_DOMAIN = import.meta.env.VITE_AUTH0_DOMAIN;
 const VITE_AUTH0_CLIENT_ID = import.meta.env.VITE_AUTH0_CLIENT_ID;
 const VITE_AUTH0_CALLBACK_URL = import.meta.env.VITE_AUTH0_CALLBACK_URL;
 const VITE_AUTH0_AUDIENCE = import.meta.env.VITE_AUTH0_AUDIENCE;
 
+type Props = {
+  children: JSX.Element;
+};
 
 export const Auth0ProviderApp: FC<Props> = ({ children }) => {
   const navigate = useNavigate();
@@ -28,9 +28,10 @@ export const Auth0ProviderApp: FC<Props> = ({ children }) => {
         audience: VITE_AUTH0_AUDIENCE,
         redirect_uri: VITE_AUTH0_CALLBACK_URL,
       }}
-      onRedirectCallback={onRedirectCallback}
+      onRedirectCallback={onRedirectCallback} //me redigire al principio de la app
     >
-      {children}
+      {/* esta seria la app */}
+      {children} 
     </Auth0Provider>
   );
 };

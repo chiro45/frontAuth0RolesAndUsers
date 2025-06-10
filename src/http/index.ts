@@ -16,7 +16,6 @@ export const postLogin = async (
   const roleClient = await interceptorApiClient.get(
     `/api/admin/roles/getRoleByName?name=Cliente`
   );
-  console.log(roleClient.data.auth0RoleId);
 
   await interceptorApiClient.post("/api/admin/users/createUserClient", {
     ...body,

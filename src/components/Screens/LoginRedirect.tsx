@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 
 import axios from "axios";
 import { useAuthStore } from "../../store/useAuthStore";
+import { useShallow } from "zustand/shallow";
 
 const VITE_AUTH0_AUDIENCE = import.meta.env.VITE_AUTH0_AUDIENCE;
 const VITE_API_SERVER_URL = import.meta.env.VITE_API_SERVER_URL;
@@ -11,20 +12,28 @@ const VITE_API_SERVER_URL = import.meta.env.VITE_API_SERVER_URL;
 export const LoginRedirect = () => {
   const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
     useAuth0();
-  const setToken = useAuthStore((state) => state.setToken);
+
+  const { setRol, setToken } = useAuthStore(
+    useShallow((state) => ({
+      setToken: state.setToken,
+      setRol: state.setRol,
+    }))
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
     const checkUserInDB = async () => {
       if (isLoading || !isAuthenticated || !user) return;
-
+      
       const sub = user.sub;
       const rol = user[`${VITE_AUTH0_AUDIENCE}/roles`]?.[0]; // extraer rol del token custom claim o user object
+  
       try {
         const token = await getAccessTokenSilently();
         setToken(token);
-        // Solo hago fetch si el rol es cliente
-        if (rol === "Cliente") {
+        
+        if (rol === undefined || rol === null || !rol) {
+          setRol(null);
           const response = await axios.post(
             `${VITE_API_SERVER_URL}/api/admin/users/getUserById`,
             {
@@ -36,20 +45,17 @@ export const LoginRedirect = () => {
               },
             }
           );
-
           // Si existe, reviso firstLogin
           if (!response.data) {
             navigate("/post-login");
-          } else {
-            navigate("/cliente");
           }
         } else {
+          setRol(rol);
           // Si no es cliente, redirijo directo a la ruta del rol
           navigate(`/${rol}`);
         }
       } catch (error: any) {
-        if (error.response?.status === 404 && rol === "Cliente") {
-          // No existe usuario en la BD y es cliente, lo mando a post-login para crearlo
+        if (error.response?.status === 404 && !rol) {
           navigate("/post-login");
         } else {
           console.error("Error al consultar usuario", error);

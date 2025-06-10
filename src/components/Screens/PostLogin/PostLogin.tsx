@@ -3,9 +3,11 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { useNavigate } from "react-router";
 import { postLogin } from "../../../http";
 import styles from "./PostLogin.module.css";
+import { useAuthStore } from "../../../store/useAuthStore";
+import { useShallow } from "zustand/shallow";
 
 export const PostLogin = () => {
-  const { user } = useAuth0();
+  const { user, getAccessTokenSilently } = useAuth0();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -24,13 +26,17 @@ export const PostLogin = () => {
       [e.target.name]: e.target.value,
     }));
   };
-
+  const { setRol, setToken } = useAuthStore(
+    useShallow((state) => ({
+      setToken: state.setToken,
+      setRol: state.setRol,
+    }))
+  );
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
     setSuccess(false);
-
     try {
       await postLogin(
         user?.sub!,
@@ -38,6 +44,9 @@ export const PostLogin = () => {
         formValues.name,
         formValues?.nickName
       );
+      const newToken = await getAccessTokenSilently();
+      setToken(newToken);
+      setRol("Cliente");
       navigate("/cliente");
       setSuccess(true);
     } catch (err: any) {

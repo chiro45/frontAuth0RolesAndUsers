@@ -2,6 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { ReactNode, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
+import { useShallow } from "zustand/shallow";
 
 interface Props {
   children: ReactNode;
@@ -11,33 +12,32 @@ interface Props {
 const VITE_AUTH0_AUDIENCE = import.meta.env.VITE_AUTH0_AUDIENCE;
 
 export const ProtectedRoute = ({ children, allowedRoles }: Props) => {
-  const { isAuthenticated, isLoading, user, getAccessTokenSilently } =
+  const { isAuthenticated, user, getAccessTokenSilently } =
     useAuth0();
 
-  const setToken = useAuthStore((state) => state.setToken);
+  const { setRol, setToken } = useAuthStore(
+    useShallow((state) => ({
+      setToken: state.setToken,
+      setRol: state.setRol,
+    }))
+  );
   const handleToken = async () => {
     const data = await getAccessTokenSilently();
-    console.log(data)
+
     setToken(data);
+    if (user) {
+      const rol = user[`${VITE_AUTH0_AUDIENCE}/roles`]?.[0];
+
+      if (rol) {
+        setRol(rol);
+      }
+    }
   };
   useEffect(() => {
     handleToken();
   }, []);
 
-  if (isLoading)
-    return (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "50dvh",
-        }}
-      >
-        <h2>Cargando...</h2>
-      </div>
-    );
+  
 
   if (!isAuthenticated || !user) return <Navigate to="/" />;
 

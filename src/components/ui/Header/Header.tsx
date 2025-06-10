@@ -3,6 +3,8 @@ import styles from "./Header.module.css";
 import { Button } from "../Button/Button";
 export const Header = () => {
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
+
+  
   return (
     <div className={styles.containerHeader}>
       <div className={styles.containerContent}>

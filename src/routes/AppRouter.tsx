@@ -9,8 +9,26 @@ import { CallbackPage } from "../components/Screens/CallbackPage";
 import { Cocinero } from "../components/Screens/Cocinero";
 import { Header } from "../components/ui/Header/Header";
 import { NavBar } from "../components/ui/NavBar/NavBar";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export const AppRouter = () => {
+  const { isLoading, getAccessTokenSilently } = useAuth0();
+
+  if (isLoading)
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "50dvh",
+        }}
+      >
+        <h2>Cargando...</h2>
+      </div>
+    );
+
   return (
     <div
       style={{
@@ -33,14 +51,7 @@ export const AppRouter = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/post-login"
-          element={
-            <ProtectedRoute allowedRoles={["Cliente", "Administrador"]}>
-              <PostLogin />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/post-login" element={<PostLogin />} />
         <Route
           path="/Cocinero"
           element={
@@ -57,6 +68,7 @@ export const AppRouter = () => {
             </ProtectedRoute>
           }
         />
+        {/* especificar pagina 404 volve a un sitio seguro */}
         <Route path="/*" element={<Home />} />
       </Routes>
     </div>

@@ -27,6 +27,7 @@ interceptorApiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = useAuthStore.getState().token;
     if (token && config.headers) {
+      console.log(token);
       config.headers.set("Authorization", `Bearer ${token}`);
     }
     return config;
