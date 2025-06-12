@@ -44,7 +44,7 @@ export const PostLogin = () => {
         formValues.name,
         formValues?.nickName
       );
-      const newToken = await getAccessTokenSilently();
+      const newToken = await getAccessTokenSilently({ cacheMode: "off" });
       setToken(newToken);
       setRol("Cliente");
       navigate("/cliente");
